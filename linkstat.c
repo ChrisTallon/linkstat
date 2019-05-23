@@ -50,7 +50,7 @@ time_t lastResponseTime = 0;
 int interval = 5;
 char* intervalStr;
 
-char ip[40];
+char ip[1024];
 int ip6 = 0;
 
 int winchFlag = 0;
@@ -80,8 +80,8 @@ int main(int argc, char** argv)
   else if (optind == argc) strcpy(ip, DEFAULT_PING_IP);
   else
   {
-    strncpy(ip, argv[optind], 40);
-    ip[39] = '\0';
+    strncpy(ip, argv[optind], 1024);
+    ip[1023] = '\0';
   }
 
   if (gai()) { fprintf(stderr, "GAI\n"); exit(-1); }
