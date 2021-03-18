@@ -234,7 +234,7 @@ void pingMachine()
     freopen("/dev/null", "w", stdout);
     freopen("/dev/null", "w", stderr);
     int er = execl("/bin/ping", "ping", "-c", "1", "-w", "2", ip, NULL);
-    if (er == -1)  goto pingError;
+    if (er == -1) _exit(50); // Child forked but exec failed. Kill child, keep away from ping exit codes.
   } // execl should not return. so else: I am the parent
 
   lastPingTime = time(NULL);
@@ -243,11 +243,13 @@ void pingMachine()
   if (wr == -1) goto pingError;
   if (!WIFEXITED(childStatus)) goto pingError;
   lastPingResult = WEXITSTATUS(childStatus);
+  if (lastPingResult == 50) goto pingError;
+
   if (lastPingResult == 0) lastResponseTime = time(NULL);
+
   return;
 
   pingError:
-
   lastPingResult = 2;
 }
 
